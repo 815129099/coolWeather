@@ -8,13 +8,17 @@ import android.coolweather.com.coolweather.util.Utility;
 import android.graphics.Color;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -30,6 +34,9 @@ import okhttp3.Callback;
 import okhttp3.Response;
 
 public class WeatherActivity extends AppCompatActivity {
+
+    public DrawerLayout drawerLayout;
+    private Button navBtn;
 
     public SwipeRefreshLayout swipeRefresh;
     private String mWeatherId;
@@ -51,6 +58,8 @@ public class WeatherActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
 
         //实现背景图和状态栏融合
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -78,7 +87,8 @@ public class WeatherActivity extends AppCompatActivity {
         comfortText = (TextView)findViewById(R.id.comfort_text);
         carWashText = (TextView)findViewById(R.id.car_wash_text);
         sportText = (TextView)findViewById(R.id.sport_text);
-
+        drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
+        navBtn = (Button)findViewById(R.id.nav_btn);
         swipeRefresh = (SwipeRefreshLayout)findViewById(R.id.swipe_refresh);
         swipeRefresh.setColorSchemeResources(R.color.colorPrimary);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -105,6 +115,16 @@ public class WeatherActivity extends AppCompatActivity {
             @Override
             public void onRefresh() {
                 requestWeather(mWeatherId);
+            }
+        });
+
+        navBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //这里设置的方向应该跟下面xml文件里面的gravity方向相同，不然会报错,start和LEFT都为从左边出现
+                drawerLayout.openDrawer(Gravity.START);
+                //Toast.makeText(WeatherActivity.this,"切换城市有问题",Toast.LENGTH_SHORT).show();
+                //drawerLayout.closeDrawers();没有参数,关闭所有的出现的抽屉
             }
         });
     }
